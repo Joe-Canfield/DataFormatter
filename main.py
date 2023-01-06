@@ -6,6 +6,7 @@
 
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 
 import re
 
@@ -26,21 +27,23 @@ def convert_to_tsv(filepath):
 
 def browse_clicked():
     """ Callback when browse button is clicked """
+    path = filedialog.askopenfilename(initialdir="/",
+                                      title="Select a File",
+                                      filetypes=(("Text files", "*.txt"),
+                                                 ("All Files", "*.*"))
+                                      )
+    return path
 
 
 """ GUI """
 
 window = tk.Tk()
-path = tk.StringVar()
+window.title('Data Formatter')
 
 filepath_label = ttk.Label(text="File Path:")
 filepath_label.pack(padx=10, pady=10)
 
-filepath_field = ttk.Entry(window, textvariable=path)
-filepath_field.pack(padx=10, pady=10)
-filepath_field.focus()
-
-browse = ttk.Button(window, text="Browse", command=browse_clicked)
+browse = ttk.Button(window, text="Browse Files", command=browse_clicked)
 browse.pack()
 
 
