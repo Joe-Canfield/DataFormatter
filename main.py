@@ -13,9 +13,9 @@ import re
 """ Conversion Function Definition """
 
 
-def convert_to_tsv(filepath):
+def convert_to_tsv():
 
-    with open(filepath) as f:
+    with open(path) as f:
         with open('RX_AC_LIN_DATA.csv', 'w') as tsv:
             for line in f:
                 content = re.sub(" {2,}", "\t", line)   # Replace 2 or more spaces with tabs
@@ -27,12 +27,15 @@ def convert_to_tsv(filepath):
 
 def browse_clicked():
     """ Callback when browse button is clicked """
+    global path
     path = filedialog.askopenfilename(initialdir="/",
                                       title="Select a File",
                                       filetypes=(("Text files", "*.txt"),
-                                                 ("All Files", "*.*"))
-                                      )
-    return path
+                                                 ("Comma Separated Values", "*.csv"),
+                                                 ("All Files", "*.*")))
+
+def print_filepath():
+    print(path)
 
 
 """ GUI """
@@ -43,9 +46,10 @@ window.title('Data Formatter')
 filepath_label = ttk.Label(text="File Path:")
 filepath_label.pack(padx=10, pady=10)
 
+path = ""   # Global variable
+
 browse = ttk.Button(window, text="Browse Files", command=browse_clicked)
 browse.pack()
-
 
 window.geometry("600x300")
 
