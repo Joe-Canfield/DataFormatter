@@ -55,6 +55,9 @@ ttk.Button(window, text="Browse Files", command=browse_clicked).pack()
 # File Conversion button
 ttk.Button(window, text="Convert file", command=convert).pack()
 
+ttk.Label(text="Export Format:").pack()
+ttk.Combobox(values="CSV TSV txt").pack()
+
 window.geometry("600x300")
 
 window.mainloop()
