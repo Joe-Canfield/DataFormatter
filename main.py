@@ -13,7 +13,7 @@ import re
 """ Conversion Function Definition """
 
 
-def convert_to_tsv():
+def convert():
 
     with open(path) as f:
         with open('RX_AC_LIN_DATA.csv', 'w') as tsv:
@@ -34,6 +34,7 @@ def browse_clicked():
                                                  ("Comma Separated Values", "*.csv"),
                                                  ("All Files", "*.*")))
 
+
 def print_filepath():
     print(path)
 
@@ -48,12 +49,12 @@ filepath_label.pack(padx=10, pady=10)
 
 path = ""   # Global variable
 
-browse = ttk.Button(window, text="Browse Files", command=browse_clicked)
-browse.pack()
+# File browser button
+ttk.Button(window, text="Browse Files", command=browse_clicked).pack()
+
+# File Conversion button
+ttk.Button(window, text="Convert file", command=convert).pack()
 
 window.geometry("600x300")
 
 window.mainloop()
-
-
-# convert_to_tsv('RX_AC_LIN_DATA.txt')
