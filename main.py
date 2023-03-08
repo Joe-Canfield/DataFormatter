@@ -6,6 +6,7 @@
 
 import re
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
@@ -25,6 +26,19 @@ gain_value[6] = 20000000    # 2.5m, 8
 gain_value[7] = 80000000    # 5m, 16
 gain_value[8] = 80000000    # 5m, 16
 
+numSamples = np.empty(shape=(NumParams, 1))
+numSamples[0] = 4000
+numSamples[1] = 600
+numSamples[2] = 4000
+numSamples[3] = 600
+numSamples[4] = 600
+numSamples[5] = 600
+numSamples[6] = 600
+numSamples[7] = 600
+numSamples[8] = 600
+
+totalSamples = sum(numSamples)
+
 def convert_to_csv(file):   # Converts .txt file with CRLF separation to CSV
 
     with open(file) as f:
@@ -36,22 +50,54 @@ def convert_to_csv(file):   # Converts .txt file with CRLF separation to CSV
 
 convert_to_csv(fileName + txtExt)
 
-name = ["0v15_5M_16_60Khz_WMDM_1k", "0v15_5M_16_60Khz_WMDM", "0v15_1M_32_60Khz_WMDM_1k", "0v15_1M_2_60Khz_WMDM", "0v15_5M_16_100Khz_WMDM", "0v15_5M_4_60Khz_WMDM", "0v15_2M5_8_60Khz_WMDM", "0v15_5M_16_60Khz_WMDM", "0v15_5M_16_100Khz_DSC24Khz"]
+testname = ["0v15_5M_16_60Khz_WMDM_1k", "0v15_5M_16_60Khz_WMDM", "0v15_1M_32_60Khz_WMDM_1k", "0v15_1M_2_60Khz_WMDM",
+        "0v15_5M_16_100Khz_WMDM", "0v15_5M_4_60Khz_WMDM", "0v15_2M5_8_60Khz_WMDM", "0v15_5M_16_60Khz_WMDM_reverse",
+        "0v15_5M_16_100Khz_DSC24Khz"]
+
+samplename = ["MainData_5k", "MainData_30k", "RefData", "RefDataQ", "ADC0", "ADC1"]
 
 with open(fileName + csvExt, 'r') as csvfile:
-    data = np.genfromtxt(csvfile, dtype=int, delimiter=",")
-    temp_array = np.empty(shape=(NumParams, math.floor(len(data)/NumParams)))
-    for i in range(math.floor(len(data)/NumParams)):
-        for j in range(NumParams):
-            temp_array[j, i] = data[i*NumParams+j]
-    np.savetxt("outputfile.csv", temp_array, delimiter=",")
-
+    data = np.genfromtxt(csvfile, dtype=int, delimiter=",")                     # Get raw data from csv
     for i in range(NumParams):
-        plt.figure(num=i+1)
-        plt.plot(temp_array[i] * ((2 ^ -23) * 2.3 * math.pi) / gain_value[i])
-        plt.ylabel('pA')
-        plt.xlabel('sample')
-        plt.title(name[i])
-        plt.grid(visible=True)
+        # For 1000 scan tests
+        if numSamples[i] == 4000:
+            temp = data[(i*2300):(4000+(i*2300))]
+            temp2 = np.empty(shape=(1000, 4))
+            for j in range(999):
+                temp2[j, 0] = temp[j*4]
+                temp2[j, 1] = temp[(j*4)+1]
+                temp2[j, 2] = temp[(j*4)+2]
+                temp2[j, 3] = temp[(j*4)+3]
+            df = pd.DataFrame(temp2, columns=samplename[0:4])
+        # For 1st 100 scan test
+        elif i == 1:
+            temp = data[4000:4600]
+            temp2 = np.empty(shape=(600, 4))
+            for j in range(99):
+                temp2[j, 0] = temp[j*6]
+                temp2[j, 1] = temp[(j*6)+1]
+                temp2[j, 2] = temp[(j*6)+2]
+                temp2[j, 3] = temp[(j*6)+3]
+            df = pd.DataFrame(temp2, columns=samplename[0:4])
+        # For all other 100 scan tests
+        else:
+            temp = data[(6800+(i*600)):(7400+(i*600))]
+            temp2 = np.empty(shape=(600, 4))
+            for j in range(99):
+                temp2[j, 0] = temp[j*6]
+                temp2[j, 1] = temp[(j*6)+1]
+                temp2[j, 2] = temp[(j*6)+2]
+                temp2[j, 3] = temp[(j*6)+3]
+            df = pd.DataFrame(temp2, columns=samplename[0:4])
+        df.to_csv(path_or_buf=testname[i]+'.csv')
 
-    plt.show()
+    #
+    # for i in range(NumParams):
+    #     plt.figure(num=i+1)
+    #     plt.plot(temp_array[i] * ((2 ^ -23) * 2.3 * math.pi) / gain_value[i])
+    #     plt.ylabel('pA')
+    #     plt.xlabel('sample')
+    #     plt.title(testname[i])
+    #     plt.grid(visible=True)
+    #
+    # plt.show()
