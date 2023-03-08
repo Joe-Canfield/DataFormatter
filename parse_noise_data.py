@@ -10,6 +10,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
+PLOT = False
+
 NumParams = 9
 fileName = 'Noise_Test_Data'
 txtExt = '.txt'
@@ -91,13 +93,3 @@ with open(fileName + csvExt, 'r') as csvfile:
             df = pd.DataFrame(temp2, columns=samplename[0:4])
         df.to_csv(path_or_buf=testname[i]+'.csv')
 
-    #
-    # for i in range(NumParams):
-    #     plt.figure(num=i+1)
-    #     plt.plot(temp_array[i] * ((2 ^ -23) * 2.3 * math.pi) / gain_value[i])
-    #     plt.ylabel('pA')
-    #     plt.xlabel('sample')
-    #     plt.title(testname[i])
-    #     plt.grid(visible=True)
-    #
-    # plt.show()
