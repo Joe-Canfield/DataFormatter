@@ -46,9 +46,11 @@ testname = ["0v15_5M_16_60Khz_WMDM_1k", "0v15_5M_16_60Khz_WMDM", "0v15_1M_32_60K
 
 samplename = ["MainData_5k", "MainData_30k", "RefData", "RefDataQ", "ADC0", "ADC1"]
 
+csvPath = '../CSV/'
+
 ### Program start
 
-#os.chdir("./TXT")
+os.chdir("./TXT")
 
 for filename in os.listdir(os.getcwd()):
     if "Wafer_ID_PS9097-02A1" in filename:  # Only use files from this Wafer ID
@@ -56,12 +58,12 @@ for filename in os.listdir(os.getcwd()):
 
         with open(filename) as f:
             csvname = os.path.splitext(filename)[0] + '.csv'
-            with open(csvname, 'w') as newfile:
+            with open(csvPath + csvname, 'w') as newfile:
                 for line in f:
                     content = re.sub("[\r\n]", ",", line)   # Replace CRLF with commas
                     newfile.write(content)
 
-        with open(csvname, 'r') as csvfile:
+        with open(csvPath + csvname, 'r') as csvfile:
             data = np.genfromtxt(csvfile, dtype=int, delimiter=",")                     # Get raw data from csv
             for i in range(NumParams):
                 # For 1000 scan tests
@@ -94,7 +96,7 @@ for filename in os.listdir(os.getcwd()):
                         temp2[j, 2] = temp[(j*6)+2]
                         temp2[j, 3] = temp[(j*6)+3]
                     df = pd.DataFrame(temp2, columns=samplename[0:4])
-                df.to_csv(path_or_buf=testname[i]+'_'+csvname)
+                df.to_csv(path_or_buf=csvPath + testname[i]+'_'+csvname)
 
 if numfiles == 0:
     print("No Files found matching contents")
