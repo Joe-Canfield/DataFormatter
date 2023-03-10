@@ -16,17 +16,6 @@ PLOT = False
 NumParams = 9
 numfiles = 0        # Initialize to 0
 
-gain_value = np.empty(shape=(NumParams, 1))
-gain_value[0] = 80000000    # 5m, 16
-gain_value[1] = 80000000    # 5m, 16
-gain_value[2] = 32000000    # 1m, 32
-gain_value[3] = 2000000     # 1m, 2
-gain_value[4] = 80000000    # 5m, 16
-gain_value[5] = 20000000    # 5m, 4
-gain_value[6] = 20000000    # 2.5m, 8
-gain_value[7] = 80000000    # 5m, 16
-gain_value[8] = 80000000    # 5m, 16
-
 numSamples = np.empty(shape=(NumParams, 1))
 numSamples[0] = 4000
 numSamples[1] = 600
