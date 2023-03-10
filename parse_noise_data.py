@@ -14,6 +14,7 @@ import math
 PLOT = False
 
 NumParams = 9
+numfiles = 0        # Initialize to 0
 
 gain_value = np.empty(shape=(NumParams, 1))
 gain_value[0] = 80000000    # 5m, 16
@@ -45,22 +46,20 @@ testname = ["0v15_5M_16_60Khz_WMDM_1k", "0v15_5M_16_60Khz_WMDM", "0v15_1M_32_60K
 
 samplename = ["MainData_5k", "MainData_30k", "RefData", "RefDataQ", "ADC0", "ADC1"]
 
+### Program start
 
-def convert_to_csv(file):   # Converts .txt file with CRLF separation to plain CSV
-
-    with open(file) as f:
-        csvname = os.path.splitext(file)[0] + '.csv'
-        with open(csvname, 'w') as newfile:
-            for line in f:
-                content = re.sub("[\r\n]", ",", line)   # Replace CRLF with commas
-                newfile.write(content)
-        return csvname
-
+#os.chdir("./TXT")
 
 for filename in os.listdir(os.getcwd()):
     if "Wafer_ID_PS9097-02A1" in filename:  # Only use files from this Wafer ID
+        numfiles += 1
 
-        csvname = convert_to_csv(filename)
+        with open(filename) as f:
+            csvname = os.path.splitext(filename)[0] + '.csv'
+            with open(csvname, 'w') as newfile:
+                for line in f:
+                    content = re.sub("[\r\n]", ",", line)   # Replace CRLF with commas
+                    newfile.write(content)
 
         with open(csvname, 'r') as csvfile:
             data = np.genfromtxt(csvfile, dtype=int, delimiter=",")                     # Get raw data from csv
@@ -97,3 +96,5 @@ for filename in os.listdir(os.getcwd()):
                     df = pd.DataFrame(temp2, columns=samplename[0:4])
                 df.to_csv(path_or_buf=testname[i]+'_'+csvname)
 
+if numfiles == 0:
+    print("No Files found matching contents")
